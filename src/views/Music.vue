@@ -240,8 +240,7 @@
           </mu-col>
         </mu-row>
       </mu-container>
-      <div id="blur" style="opacity: 0.4">
-        <img :src="music.pictureUrl" alt="blur-img" />
+      <div id="blur" :style="{ background: 'url(' + music.pictureUrl + ') no-repeat center/cover' }">
       </div>
       <div>
         <audio
