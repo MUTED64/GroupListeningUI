@@ -933,7 +933,6 @@ import ChatSearchPicture from "../components/ChatSearchPicture";
 import BiliLive from "../components/BiliLive";
 import Lyrics from "../components/Lyrics";
 
-import wx from 'weixin-js-sdk';
 import QrcodeVue from "qrcode.vue";
 export default {
   name: "Music",
@@ -2583,15 +2582,6 @@ export default {
     // Code that will run only after the
     // entire view has been rendered
     })
-    wx.config({
-            // 配置信息, 即使不正确也能使用 wx.ready
-            debug: false,
-            appId: '',
-            timestamp: 1,
-            nonceStr: '',
-            signature: '',
-            jsApiList: []
-        });
     let collect =localStorage.getItem("collectMusic");
     if(collect && collect != undefined){
       this.favoriteMap = JSON.parse(collect);
@@ -2636,43 +2626,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.demo-container {
-  .row {
-    margin-bottom: 20px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
-
-.album {
-  width: 100%;
-  display: inline-block;
-  cursor: pointer;
-  transition-duration: 0.2s;
-  padding: 4px;
-  border: 32px solid rgb(16, 16, 16);
-  border-radius: 50%;
-  background: linear-gradient(
-    rgb(39, 39, 39),
-    rgb(0, 0, 0),
-    rgb(0, 0, 0),
-    rgb(39, 39, 39)
-  );
-  /*box-shadow: 0 0 20px 2px #000;*/
-}
-
-.album-rotate {
-  animation: rotate 20s linear infinite;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 </style>
