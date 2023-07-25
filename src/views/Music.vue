@@ -32,7 +32,7 @@
                   </mu-flex>
                 </mu-flex>
               </div>
-                <Lyrics :lyrics="lyrics" :currentTime="currentTime"/>
+              <Lyrics :lyrics="lyrics" :currentTime="currentTime" />
             </mu-row>
           </mu-col>
 
@@ -1491,14 +1491,19 @@ export default {
             this.firstLoaded = 0;
             messageContent.data.url = messageContent.data.url + "?timestamp=" + Date.now();
             this.$store.commit("setPlayerMusic", messageContent.data);
-            document.querySelector("#music").preload = "auto";
+            console.log(document.querySelector("#music"))
+            this.$nextTick(() => {
+              document.querySelector("#music").preload = "auto";
+            })
+
             if (
               messageContent.data.lyric === undefined ||
               typeof messageContent.data.lyric === "undefined" ||
               messageContent.data.lyric === null ||
               messageContent.data.lyric === ""
             ) {
-              this.$store.commit("setPlayerLyrics", []);
+              console.log("歌词为空");
+              this.$store.commit("setPlayerLyrics", { 0: "歌词为空" });
             } else {
               this.lyrics = musicUtils.parseLyric(messageContent.data.lyric);
               this.$store.commit(
