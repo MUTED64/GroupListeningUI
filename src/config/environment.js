@@ -4,12 +4,12 @@
  * @type {string}
  */
 
-let baseUrl = 'http://127.0.0.1';
+let baseUrl = 'http://www.alang.run:8080';
 
 if (process.env.NODE_ENV === "development") {
-    baseUrl = "http://localhost:8888";
+    baseUrl = "http://www.alang.run:8080";
 } else if (process.env.NODE_ENV === "test") {
-    baseUrl = "http://127.0.0.1:8080";
+    baseUrl = "http://www.alang.run:8080";
 } else if (process.env.NODE_ENV === "production") {
     baseUrl = "http://www.alang.run:8080";
 }
