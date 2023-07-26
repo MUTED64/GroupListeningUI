@@ -4,14 +4,14 @@
  * @type {string}
  */
 
-let baseUrl = 'http://www.alang.run:8080';
+let baseUrl = 'https://49.232.157.251:8888';
 
 if (process.env.NODE_ENV === "development") {
-    baseUrl = "http://www.alang.run:8080";
+    baseUrl = "https://49.232.157.251:8888";
 } else if (process.env.NODE_ENV === "test") {
-    baseUrl = "http://www.alang.run:8080";
+    baseUrl = "https://49.232.157.251:8888";
 } else if (process.env.NODE_ENV === "production") {
-    baseUrl = "http://www.alang.run:8080";
+    baseUrl = "https://49.232.157.251:8888";
 }
 
 let isProduction = false;
