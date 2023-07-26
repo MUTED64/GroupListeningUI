@@ -13,4 +13,14 @@ module.exports = {
       //查看CSS属于哪个css文件
       sourceMap: true,
     },
+    pwa: {
+      workboxOptions: {
+        skipWaiting: true,
+        clientsClaim: true,
+        importWorkboxFrom: 'local',
+        importsDirectory: 'js',
+        navigateFallback: '/',
+        navigateFallbackBlacklist: [/\/api\//]
+      }
+    }
 };
