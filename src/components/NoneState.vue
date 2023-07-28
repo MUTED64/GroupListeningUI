@@ -30,7 +30,7 @@ div {
     font-size: 16px;
     color: #ccc;
     width: 100%;
-    height: 64px;
+    height: 128px;
     background: #80808040;
     border-radius: 8px;
 }

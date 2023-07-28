@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="music-player-page" v-if="isPlay">
-      <PageHeader :title="musichouse"></PageHeader>
+      <PageHeader :title="musichouse" @openHouse="openHouse=!openHouse"></PageHeader>
       <mu-container fluid class="demo-container">
         <mu-row gutter>
           <!-- 歌曲 -->
-          <mu-col span="12" sm="12" md="4" lg="3" xl="3" style="flex:0 1 auto;">
-            <mu-row class="playing-music" :justify-content="(screenWidth < 766) ? 'center' : 'start'">
+          <mu-col id="nowplaying" span="12" sm="12" md="4" lg="3" xl="3" style="flex:0 1 auto;">
+            <mu-row class="playing-music" :justify-content="isMobile ? 'center' : 'start'">
               <img class="album-cover" :src="!music.pictureUrl.includes('gtimg')
                 ? music.pictureUrl
                 : require('../assets/images/logo.png')" alt="pic" />
@@ -16,13 +16,13 @@
                 <span class="playing-music-name">{{ music ? music.name : "暂无名称 " }}</span><br />
                 <span class="playing-music-artist">{{ music ? music.artist : "佚名" }}</span><br />
               </div>
+              <div class="playbar">
+                <div class="playing-status">
+                  <small id="musicEndTime">{{ playerTime }}</small>
+                  <mu-linear-progress mode="determinate" :value="progress" color="white" size="8"
+                    style="border-radius: 4px; margin-bottom: 16px;"></mu-linear-progress>
 
-              <div class="playing-status">
-                <small id="musicEndTime">{{ playerTime }}</small>
-                <mu-linear-progress mode="determinate" :value="progress" color="white" size="8"
-                  style="border-radius: 4px; margin-bottom: 16px;"></mu-linear-progress>
-
-                <!-- <mu-flex justify-content="start" style="width: 100%; gap: 8px;">
+                  <!-- <mu-flex justify-content="start" style="width: 100%; gap: 8px;">
                   <mu-flex class="flex-demo">
                     <mu-icon value="volume_up"></mu-icon>
                   </mu-flex>
@@ -30,27 +30,31 @@
                     <mu-slider class="demo-slider" v-model="volume" color="white"></mu-slider>
                   </mu-flex>
                 </mu-flex> -->
+                </div>
+                <mu-button fab small color="primary" class="button-wrapper" @click="musicSkipVote">
+                  <mu-icon value="skip_next" color="white" size="40"></mu-icon>
+                </mu-button>
               </div>
               <Lyrics :lyrics="lyrics" :currentTime="currentTime" />
             </mu-row>
           </mu-col>
 
           <!-- 歌曲列表 -->
-          <mu-col span="12" sm="12" md="8" lg="5" xl="5">
+          <mu-col id="playlist" span="12" sm="12" md="8" lg="5" xl="5">
             <div class="flex-title">歌曲列表</div>
             <div class="pick-list">
-              <NoneState v-show="!playList.length" text="没有歌喵"></NoneState>
-              <PickListItem v-for="(item,key) in playList"
-              :item="item" :index="key" @upvote="(id,name)=>goodMusic(id,name)"></PickListItem>
+              <NoneState v-show="!playList.length" text="还没有歌喵"></NoneState>
+              <PickListItem v-for="(item, key) in playList" :item="item" :index="key"
+                @upvote="(id, name) => goodMusic(id, name)"></PickListItem>
             </div>
           </mu-col>
 
           <!-- 聊天 -->
-          <mu-col span="12" sm="12" md="12" lg="4" xl="4">
-            <mu-col :style="screenWidth < 766 && screenWidth !== 0
-                  ? 'margin: 16px 0 48px 0;'
-                  : ''
-                ">
+          <mu-col id="chat" span="12" sm="12" md="12" lg="4" xl="4">
+            <mu-col :style="isMobile
+              ? 'margin: 16px 0;'
+              : ''
+              ">
               <mu-flex justify-content="center" style="margin-bottom:10px;">
                 <mu-button round color="transparent" @click="openHouse = !openHouse">
                   <mu-icon left value="account_balance"></mu-icon>
@@ -90,7 +94,7 @@
                   </div>
                 </div>
               </div>
-              <div :class="screenWidth < 766 && screenWidth !== 0
+              <div :class="isMobile
                 ? 'message-input-group'
                 : ''
                 ">
@@ -136,6 +140,17 @@
           </mu-col>
         </mu-row>
       </mu-container>
+      <div class="mobile-bottom-jump">
+        <mu-ripple @click="scrollToHash('nowplaying')" class="mu-ripple" color="white" :opacity="0.3">
+          <mu-icon left color="white" value="music_note" size="28"></mu-icon>
+        </mu-ripple>
+        <mu-ripple @click="scrollToHash('playlist')" class="mu-ripple" color="white" :opacity="0.3">
+          <mu-icon left color="white" value="playlist_play" size="32"></mu-icon>
+        </mu-ripple>
+        <mu-ripple @click="scrollToHash('chat')" class="mu-ripple" color="white" :opacity="0.3">
+          <mu-icon left color="white" value="chat" size="28"></mu-icon>
+        </mu-ripple>
+      </div>
       <div id="blur" :style="{ background: 'url(' + music.pictureUrl + ') no-repeat center/cover' }">
       </div>
       <div>
@@ -730,7 +745,7 @@ export default {
     }
   },
   computed: {
-    playList(){
+    playList() {
       return this.pick.slice(1);
     },
     filteredHomeHouses() {
@@ -780,6 +795,9 @@ export default {
         music.volume = Number(value) / 100;
         this.$store.commit("setPlayerVolume", value);
       }
+    },
+    isMobile() {
+      return this.screenWidth < 766 & this.screenWidth > 0;
     }
   },
   data: () => ({
@@ -1677,7 +1695,7 @@ export default {
       this.currentUser = page;
       this.searchUser();
     },
-    goodMusic: function (id,name) {
+    goodMusic: function (id, name) {
       let stompClient = this.$store.getters.getStompClient;
       stompClient.send("/music/good/" + id, {}, {});
       this.$toast.message(`[${id}]${name} - 已发送点赞请求`);
@@ -2169,7 +2187,11 @@ export default {
         this.searchData[i].source = this.source;
         this.pickMusicNoToast(this.searchData[i]);
       }
-    }
+    },
+    scrollToHash(hash) {
+      const anchorElement = document.getElementById(hash);
+      anchorElement.scrollIntoView({ behavior: 'smooth' });
+    },
   },
   watch: {
     sourceGd: function (newValue, oldValue) {
