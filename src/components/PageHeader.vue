@@ -1,8 +1,8 @@
 <template>
     <header>
-        <mu-icon left color="white" value="library_music" :size="isMobile ? 24 : 48"></mu-icon>
-        <h1>{{ title }}</h1>
-        <mu-icon left color="white" value="info_outline" :size="isMobile ? 24 : 48"></mu-icon>
+        <mu-icon left color="white" value="library_music" :size="isMobile ? 32 : 48"></mu-icon>
+        <h1 class="ellipsis">{{ title }}</h1>
+        <mu-icon left color="white" value="info_outline" :size="isMobile ? 32 : 48"></mu-icon>
     </header>
 </template>
 
@@ -31,6 +31,8 @@ export default {
 
 <style scoped>
 header {
+    position: fixed;
+    top: 0;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -48,14 +50,13 @@ h1 {
     padding: 0;
     flex: 1 1 auto;
     font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 64px;
 }
 
 @media screen and (max-width: 768px) {
     h1 {
-        font-size: 24px;
+        font-size: 32px;
+        line-height: 48px;
     }
 }
 </style>

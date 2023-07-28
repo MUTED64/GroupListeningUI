@@ -1,8 +1,11 @@
 <template>
-  <div class="lyrics-wrapper" :style="'height:'+containerHeight+'px;'">
-    <div class="lyrics-container" ref="container">
-      <div class="lyrics-line" v-for="(value, key) in lyrics" :key="key" :class="{ 'lyrics-active': activeLine == key }"
-        >{{ value.trim() }}</div>
+  <div style="width:100%;">
+    <div class="flex-title">歌词</div>
+    <div class="lyrics-wrapper" :style="'height:' + containerHeight + 'px;'">
+      <div class="lyrics-container" ref="container">
+        <div class="lyrics-line" v-for="(value, key) in finalLyrics" :key="key"
+          :class="{ 'lyrics-active': activeLine == key }">{{ value.trim() }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -55,6 +58,15 @@ export default {
       }
 
       return 0;
+    },
+    finalLyrics() {
+      if (!this.lyrics) {
+        return { 0: "暂无歌词" }
+      } else if (JSON.stringify(this.lyrics).indexOf("纯音乐，请欣赏") !== -1) {
+        return { 0: "纯音乐，请欣赏" }
+      } else {
+        return this.lyrics
+      }
     }
   },
   watch: {
@@ -87,7 +99,7 @@ export default {
   width: 100%;
   overflow-y: hidden;
   scrollbar-width: none;
-  padding: 50% 24px;
+  padding: 110px 24px;
 }
 
 .lyrics-container::-webkit-scrollbar {
@@ -96,6 +108,7 @@ export default {
 
 .lyrics-line {
   font-size: 16px;
+  color: #c0c0c0;
   margin-bottom: 10px;
   text-align: left;
   white-space: pre-wrap;
@@ -104,15 +117,16 @@ export default {
 .lyrics-active {
   font-weight: bold;
   font-size: 20px;
+  color: white;
 }
 
 .lyrics-wrapper {
   width: 100%;
   display: flex;
-  border-radius: 16px;
+  border-radius: 8px;
   overflow: hidden;
-  margin: 10px 0;
-  background: #80808020;
+  margin: 0 0 16px;
+  background: #80808040;
   backdrop-filter: blur(60px);
 }
 </style>

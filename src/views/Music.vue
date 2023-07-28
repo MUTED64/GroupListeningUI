@@ -2,11 +2,10 @@
   <div>
     <div class="music-player-page" v-if="isPlay">
       <PageHeader :title="musichouse"></PageHeader>
-
       <mu-container fluid class="demo-container">
         <mu-row gutter>
           <!-- 歌曲 -->
-          <mu-col span="12" sm="12" md="4" lg="3" xl="3" style="flex:0 1 auto">
+          <mu-col span="12" sm="12" md="4" lg="3" xl="3" style="flex:0 1 auto;">
             <mu-row class="playing-music" :justify-content="(screenWidth < 766) ? 'center' : 'start'">
               <img class="album-cover" :src="!music.pictureUrl.includes('gtimg')
                 ? music.pictureUrl
@@ -23,14 +22,14 @@
                 <mu-linear-progress mode="determinate" :value="progress" color="white" size="8"
                   style="border-radius: 4px; margin-bottom: 16px;"></mu-linear-progress>
 
-                <mu-flex justify-content="start" style="width: 100%; gap: 8px;">
+                <!-- <mu-flex justify-content="start" style="width: 100%; gap: 8px;">
                   <mu-flex class="flex-demo">
                     <mu-icon value="volume_up"></mu-icon>
                   </mu-flex>
                   <mu-flex class="flex-demo" fill>
                     <mu-slider class="demo-slider" v-model="volume" color="white"></mu-slider>
                   </mu-flex>
-                </mu-flex>
+                </mu-flex> -->
               </div>
               <Lyrics :lyrics="lyrics" :currentTime="currentTime" />
             </mu-row>
@@ -38,50 +37,18 @@
 
           <!-- 歌曲列表 -->
           <mu-col span="12" sm="12" md="8" lg="5" xl="5">
-            <mu-data-table style="background-color: transparent;max-height:380px;overflow:auto;" :selectable="false"
-              :hover="false" :columns="columns" :data="pick">
-              <template slot-scope="scope">
-                <td class="is-left">
-                  <a @click="removeCollect(scope.row)"
-                    v-if="favoriteMap[scope.row.id] != null && favoriteMap[scope.row.id] != undefined">
-                    <mu-icon value="favorite" size="20" color="red"></mu-icon>
-                  </a>
-                  <a @click="collectMusic(scope.row)" v-else>
-                    <mu-icon value="favorite" size="20" color="white"></mu-icon>
-                  </a>
-                  {{ scope.$index + 1 }}
-
-                </td>
-                <td class="is-left">
-                  <a @click="goodMusic(scope.row)" v-if="scope.$index != 0 && good">
-                    <mu-icon value="thumb_up" size="20" color="teal"></mu-icon>
-                  </a>
-                  {{
-                    isRoot || isAdmin
-                    ? scope.row.name + `[${scope.row.id}]`
-                    : scope.row.name
-                  }}
-                </td>
-                <td class="is-center">{{ scope.row.artist }}</td>
-                <td class="is-center">{{ "《" + scope.row.album.name + "》" }}</td>
-                <td class="is-center">
-                  {{
-                    isRoot || isAdmin
-                    ? scope.row.nickName +
-                    (scope.row.sessionId
-                      ? `[${scope.row.sessionId}]`
-                      : "")
-                    : scope.row.nickName
-                  }}
-                </td>
-              </template>
-            </mu-data-table>
+            <div class="flex-title">歌曲列表</div>
+            <div class="pick-list">
+              <NoneState v-show="!playList.length" text="没有歌喵"></NoneState>
+              <PickListItem v-for="(item,key) in playList"
+              :item="item" :index="key" @upvote="(id,name)=>goodMusic(id,name)"></PickListItem>
+            </div>
           </mu-col>
 
           <!-- 聊天 -->
           <mu-col span="12" sm="12" md="12" lg="4" xl="4">
             <mu-col :style="screenWidth < 766 && screenWidth !== 0
-                  ? 'margin: 60px 0 200px 0;'
+                  ? 'margin: 16px 0 48px 0;'
                   : ''
                 ">
               <mu-flex justify-content="center" style="margin-bottom:10px;">
@@ -103,7 +70,7 @@
               </div>
               <div id="chat-container">
                 <div v-for="(item, index) in chatData" :style="item.type === 'notice' ? 'text-align: center' : ''"
-                  style="padding: 10px 0">
+                  style="padding: 10px 8px;">
                   <div>
                     <small class="chat-data-user">
                       {{
@@ -737,6 +704,8 @@ import ChatSearchPicture from "../components/ChatSearchPicture";
 import BiliLive from "../components/BiliLive";
 import Lyrics from "../components/Lyrics";
 import PageHeader from '../components/PageHeader';
+import PickListItem from "../components/PickListItem";
+import NoneState from "../components/NoneState";
 
 import QrcodeVue from "qrcode.vue";
 export default {
@@ -747,7 +716,9 @@ export default {
     QrcodeVue,
     BiliLive,
     Lyrics,
-    PageHeader
+    PageHeader,
+    PickListItem,
+    NoneState
   },
   filters: {
     ellipsis(value) {
@@ -759,6 +730,9 @@ export default {
     }
   },
   computed: {
+    playList(){
+      return this.pick.slice(1);
+    },
     filteredHomeHouses() {
       return this.homeHouses.filter(house => {
         return house.name.toLowerCase().indexOf(this.houseSearch.toLowerCase()) !== -1;
@@ -1703,10 +1677,10 @@ export default {
       this.currentUser = page;
       this.searchUser();
     },
-    goodMusic: function (row) {
+    goodMusic: function (id,name) {
       let stompClient = this.$store.getters.getStompClient;
-      stompClient.send("/music/good/" + row.id, {}, {});
-      this.$toast.message(`[${row.id}]${row.name} - 已发送点赞请求`);
+      stompClient.send("/music/good/" + id, {}, {});
+      this.$toast.message(`[${id}]${name} - 已发送点赞请求`);
     },
     pickMusic: function (row) {
       let stompClient = this.$store.getters.getStompClient;
