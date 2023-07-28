@@ -1481,7 +1481,11 @@ export default {
             this.lastLyric = "";
             this.$store.commit("setPlayerLyric", "");
             this.firstLoaded = 0;
-            messageContent.data.url = messageContent.data.url + "?timestamp=" + Date.now();
+            if(messageContent.data.url.indexOf("?") > -1){
+              messageContent.data.url += "&timestamp=" + Date.now();
+            }else{
+              messageContent.data.url += "?timestamp=" + Date.now();
+            }
             this.$store.commit("setPlayerMusic", messageContent.data);
             console.log(document.querySelector("#music"))
             this.$nextTick(() => {
