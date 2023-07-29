@@ -22,7 +22,7 @@ export default new Vuex.Store({
             music: {},
             lyrics: [],
             lyric: '',
-            volume: localStorage.getItem('VOLUME') ? Number(localStorage.getItem('VOLUME')) : 10,
+            volume: localStorage.getItem('VOLUME') ? Number(localStorage.getItem('VOLUME')) : 100,
             progress: 0,
             time: '00:00 / 00:00',
 			music2:{}

@@ -4,8 +4,16 @@
   padding: 0 32px;
   overflow: auto;
   height: calc(100vh - 128px);
+  height: calc(100dvh - 128px);
   -ms-overflow-style: none;
   scrollbar-width: none;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+#playlist{
+  padding-right: 2vw;
+  padding-left: 2vw;
 }
 
 ::-webkit-scrollbar {
@@ -23,19 +31,13 @@
   padding: 16px 8px;
 }
 
-@media screen and (max-width: 768px) {
-  .container-fluid.demo-container {
-    margin: 72px 0 64px;
-    height: calc(100vh - 72px);
-  }
-}
-
 .music-player-page {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   height: 100vh;
+  height: 100dvh;
 }
 
 .pick-list{
@@ -43,6 +45,7 @@
   flex-direction: column;
   gap: 4px;
   max-height: calc(100vh - 192px);
+  max-height: calc(100dvh - 192px);
   overflow: auto;
 }
 
@@ -50,6 +53,7 @@
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 4px;
+  flex: 1;
 }
 
 body,
@@ -66,8 +70,10 @@ th {
 
 #chat-container {
   width: 100%;
-  height: calc(100vh - 432px);
+  height: calc(100vh - 342px);
+  height: calc(100dvh - 342px);
   overflow: auto;
+  padding: 0 16px;
   //position: relative;
 }
 
@@ -81,7 +87,7 @@ th {
   padding: 10px;
   max-width: calc(100% - 5px);
   border-radius: 5px;
-  background: #60606060;
+  background: #00000040;
   box-shadow: 2px 0px 8px #00000020;
   word-break: break-word;
 }
@@ -107,6 +113,12 @@ th {
 
 .mu-text-field-input {
   color: white !important;
+}
+
+.chatbox-wrapper{
+  display: flex;
+  padding: 20px;
+  gap: 16px;
 }
 
 .chat-quick-bar {
@@ -197,6 +209,12 @@ th {
   .mu-input-focus-line,
   .material-icons {
     color: #009688 !important;
+  }
+
+  .search_btn_wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .search_pick_btn {
@@ -383,7 +401,7 @@ th {
   margin-bottom: 8px;
 }
 
-.playbar .button-wrapper {
+body .button-wrapper {
   box-shadow: none;
 }
 
@@ -393,6 +411,13 @@ th {
 
 .mobile-bottom-jump{
   display: none;
+}
+
+.col.chat-wrapper{
+  background: #80808040;
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .mu-ripple{
@@ -425,13 +450,10 @@ th {
     justify-content: center;
     box-shadow: 0 0 8px #00000080;
   }
-}
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  .container-fluid.demo-container {
+    margin: 72px 0 64px;
+    height: calc(100vh - 136px);
+    height: calc(100dvh - 136px);
   }
 }

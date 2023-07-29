@@ -1,15 +1,16 @@
 <template>
   <div>
     <div class="music-player-page" v-if="isPlay">
-      <PageHeader :title="musichouse" @openHouse="openHouse=!openHouse"></PageHeader>
+      <PageHeader :title="musichouse" @openHouse="openHouse = !openHouse" @showHelp="openManual = !openManual"
+        @showAbout="openAbout = !openAbout"></PageHeader>
       <mu-container fluid class="demo-container">
         <mu-row gutter>
           <!-- 歌曲 -->
           <mu-col id="nowplaying" span="12" sm="12" md="4" lg="3" xl="3" style="flex:0 1 auto;">
             <mu-row class="playing-music" :justify-content="isMobile ? 'center' : 'start'">
-              <img class="album-cover" :src="!music.pictureUrl.includes('gtimg')
+              <img class="album-cover" :src="music.pictureUrl
                 ? music.pictureUrl
-                : require('../assets/images/logo.png')" alt="pic" />
+                : require('../assets/images/default_album.png')" alt="pic" />
             </mu-row>
             <mu-row class="playing-music flex-column">
               <div class="playing-music-info">
@@ -41,7 +42,15 @@
 
           <!-- 歌曲列表 -->
           <mu-col id="playlist" span="12" sm="12" md="8" lg="5" xl="5">
-            <div class="flex-title">歌曲列表</div>
+            <div style="display: flex;">
+              <div class="flex-title">歌曲列表</div>
+              <mu-button color="#60606040" style="border-radius: 8px;height: 32px;box-shadow: 0 1px 4px 0px #00000040;"
+                @click="openSearch = !openSearch">
+                <mu-icon left value="playlist_add" size="20"></mu-icon>
+                添加歌曲
+              </mu-button>
+            </div>
+
             <div class="pick-list">
               <NoneState v-show="!playList.length" text="还没有歌喵"></NoneState>
               <PickListItem v-for="(item, key) in playList" :item="item" :index="key"
@@ -51,24 +60,16 @@
 
           <!-- 聊天 -->
           <mu-col id="chat" span="12" sm="12" md="12" lg="4" xl="4">
-            <mu-col :style="isMobile
-              ? 'margin: 16px 0;'
-              : ''
-              ">
-              <mu-flex justify-content="center" style="margin-bottom:10px;">
-                <mu-button round color="transparent" @click="openHouse = !openHouse">
-                  <mu-icon left value="account_balance"></mu-icon>
-                  听歌房
-                </mu-button>
-              </mu-flex>
+            <div class="flex-title">聊天室</div>
+            <mu-col class="chat-wrapper">
               <div style="font-size: 16px; font-weight: 400;">
-                <mu-button flat color="white" @click="houseUser">
+                <mu-button flat color="white" style="border-bottom-right-radius: 8px; height: 48px;" @click="houseUser">
                   <mu-icon left value="supervisor_account"></mu-icon>
                   {{ online }}
                 </mu-button>
-                <mu-button flat color="white" @click="clearScr" style="float:right;">
-                  <mu-icon left value="clear_all"></mu-icon>
-
+                <mu-button flat color="white" @click="clearScr"
+                  style="float: right; border-bottom-left-radius: 8px; height: 48px;">
+                  <mu-icon value="delete_sweep"></mu-icon>
                 </mu-button>
 
               </div>
@@ -94,35 +95,27 @@
                   </div>
                 </div>
               </div>
-              <div :class="isMobile
-                ? 'message-input-group'
-                : ''
-                ">
+              <div class="chatbox-wrapper">
                 <mu-text-field :value="chatMessage" @input="updateChatMessage" @keydown.enter="sendHandler"
-                  placeholder="Message..." color="primary" class="width-size-100 chat-message"></mu-text-field>
+                  placeholder="Message..." underline-color="#20202080"
+                  class="width-size-100 chat-message"></mu-text-field>
                 <br />
-                <div style="color:white;">
-                  <mu-radio :value="'wy'" v-model="sourceChat" color="primary" :label="'网易'"
-                    class="searchSource"></mu-radio>
-                  <mu-radio :value="'qq'" v-model="sourceChat" color="primary" :label="'QQ'"
-                    class="searchSource"></mu-radio>
-
-                  <mu-button flat color="primary" @click="openManual = !openManual"><mu-icon left
-                      value="assignment"></mu-icon>教程及直播
-                  </mu-button>
-                </div>
 
                 <mu-flex class="flex-wrapper" align-items="center">
-
-                  <mu-button v-if="!isContented" @click="connect" color="primary" style="width: 90%">连接服务器</mu-button>
-                  <mu-button v-if="isContented" @click="sendHandler" color="primary" style="width: 90%">发送消息</mu-button>
-                  <mu-button icon @click="openBotttomSheet">
-                    <mu-icon value="favorite" color="red"></mu-icon>
+                  <mu-button fab small v-if="!isConnected" @click="connect" color="primary" class="button-wrapper">
+                    <mu-icon value="link_off" size="24">
+                    </mu-icon>
                   </mu-button>
-
+                  <mu-button fab small v-if="isConnected" @click="sendHandler" color="primary" class="button-wrapper">
+                    <mu-icon value="send" size="24">
+                    </mu-icon>
+                  </mu-button>
+                  <!-- <mu-button icon @click="openBotttomSheet">
+                    <mu-icon value="favorite" color="red"></mu-icon>
+                  </mu-button> -->
                 </mu-flex>
 
-                <div style="padding-top: 10px;">
+                <!-- <div style="padding-top: 10px;">
 
                   <mu-chip style="margin-right:10px;" color="rgba(0, 150, 136, 0.5)"
                     @click="openPictureSearch = !openPictureSearch">斗图</mu-chip>
@@ -132,7 +125,7 @@
                   <mu-chip style="margin-right:10px;" color="rgba(0, 150, 136, 0.5)"
                     @click="openSearchGd = !openSearchGd">歌单</mu-chip>
 
-                </div>
+                </div> -->
               </div>
 
             </mu-col>
@@ -141,7 +134,7 @@
         </mu-row>
       </mu-container>
       <div class="mobile-bottom-jump">
-        <mu-ripple @click="scrollToHash('nowplaying')" class="mu-ripple" color="white" :opacity="0.3">
+        <mu-ripple @click="scrollToHash('nowplaying',)" class="mu-ripple" color="white" :opacity="0.3">
           <mu-icon left color="white" value="music_note" size="28"></mu-icon>
         </mu-ripple>
         <mu-ripple @click="scrollToHash('playlist')" class="mu-ripple" color="white" :opacity="0.3">
@@ -245,7 +238,7 @@
               </mu-avatar>
             </a>
           </mu-col>
-          <mu-col span="1">
+          <mu-col span="1" class="search_btn_wrapper">
             <mu-button class="search_btn" icon @click="search">
               <mu-icon value="search"></mu-icon>
             </mu-button>
@@ -313,7 +306,7 @@
             <mu-radio :value="'qq'" v-model="sourceGd" color="primary" :label="'QQ'" class="searchradio"></mu-radio>
             <mu-radio :value="'qq_user'" v-model="sourceGd" color="primary" :label="'用户'" class="searchradio"></mu-radio>
           </mu-col>
-          <mu-col span="1">
+          <mu-col span="1" class="search_btn_wrapper">
             <mu-button class="search_btn" icon @click="searchGd">
               <mu-icon value="search"></mu-icon>
             </mu-button>
@@ -371,7 +364,7 @@
               placeholder="请输入用户昵称" color="#009688" class="width-size-100" style="text-align: center"></mu-text-field>
             <mu-radio :value="'wy'" v-model="sourceUser" color="primary" :label="'网易'" class="searchradio"></mu-radio>
           </mu-col>
-          <mu-col span="1">
+          <mu-col span="1" class="search_btn_wrapper">
             <mu-button class="search_btn" icon @click="searchUser">
               <mu-icon value="search"></mu-icon>
             </mu-button>
@@ -673,6 +666,42 @@
 
     </mu-drawer>
 
+    <mu-drawer width="300" :open.sync="openAbout" :docked="false" :right="true">
+      <mu-card style="width: 100%; max-width: 375px; margin: 0 auto;">
+        <mu-card-header title="JumpAlang" sub-title="Quanzhou, China">
+          <mu-avatar size="45" slot="avatar">
+            <img style="border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.2);" src="../assets/images/uicon.jpg">
+          </mu-avatar>
+        </mu-card-header>
+        <mu-card-media title="Smile" sub-title="Forever youthful Forever Weeping"
+          style="max-height: 200px; overflow: hidden">
+          <img src="../assets/images/fl.jpg">
+        </mu-card-media>
+        <mu-card-text>
+          聊天、斗图、音乐、点播、娱乐
+        </mu-card-text>
+      </mu-card>
+      <mu-list>
+        <mu-sub-header>社交</mu-sub-header>
+        <mu-list-item button target="_blank" href="https://weibo.com/JumpAlang">
+          <mu-list-item-title>微博</mu-list-item-title>
+        </mu-list-item>
+        <mu-list-item button target="_blank" href="http://www.alang.run">
+          <mu-list-item-title>博客</mu-list-item-title>
+        </mu-list-item>
+        <mu-divider></mu-divider>
+        <mu-sub-header>开源</mu-sub-header>
+        <mu-list-item button target="_blank" href="https://github.com/JumpAlang/Jusic-serve">
+          <mu-list-item-title>Jusic-serve</mu-list-item-title>
+        </mu-list-item>
+      </mu-list>
+      <mu-divider></mu-divider>
+      <mu-sub-header>赞赏</mu-sub-header>
+      <mu-card-media style="max-height: 200px; overflow: hidden">
+        <img src="../assets/images/aplause.jpg">
+      </mu-card-media>
+    </mu-drawer>
+
     <mu-bottom-sheet id="sheet" :open.sync="open" style="max-height:380px;overflow:auto;">
       <mu-list>
         <mu-sub-header>
@@ -714,7 +743,6 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { sendUtils, messageUtils, timeUtils, musicUtils } from "../utils";
 import { baseUrl, isProduction } from "../config/environment";
-import Navigation from "../components/Navigation";
 import ChatSearchPicture from "../components/ChatSearchPicture";
 import BiliLive from "../components/BiliLive";
 import Lyrics from "../components/Lyrics";
@@ -726,7 +754,6 @@ import QrcodeVue from "qrcode.vue";
 export default {
   name: "Music",
   components: {
-    Navigation,
     ChatSearchPicture,
     QrcodeVue,
     BiliLive,
@@ -759,7 +786,7 @@ export default {
       });
     },
     ...mapGetters({
-      isContented: "getIsConnected",
+      isConnected: "getIsConnected",
       online: "getSocketOnline",
       chatMessage: "getChatMessage",
       chatData: "getChatData",
@@ -818,6 +845,7 @@ export default {
     openSearchUser: false,
     openHouse: false,
     openManual: false,
+    openAbout: false,
     searchColumns: [
       { title: "ID", name: "id", width: 40, align: "left" },
       // {title: '操作', name: 'op', align: 'center'},
@@ -1481,9 +1509,9 @@ export default {
             this.lastLyric = "";
             this.$store.commit("setPlayerLyric", "");
             this.firstLoaded = 0;
-            if(messageContent.data.url.indexOf("?") > -1){
+            if (messageContent.data.url.indexOf("?") > -1) {
               messageContent.data.url += "&timestamp=" + Date.now();
-            }else{
+            } else {
               messageContent.data.url += "?timestamp=" + Date.now();
             }
             this.$store.commit("setPlayerMusic", messageContent.data);
@@ -2192,9 +2220,13 @@ export default {
         this.pickMusicNoToast(this.searchData[i]);
       }
     },
-    scrollToHash(hash) {
-      const anchorElement = document.getElementById(hash);
-      anchorElement.scrollIntoView({ behavior: 'smooth' });
+    scrollToHash(hash, container) {
+      const father = container || document.querySelector('.demo-container');
+      const offsetTop = document.getElementById(hash).offsetTop;
+      father.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
     },
   },
   watch: {

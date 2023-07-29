@@ -2,7 +2,14 @@
     <header>
         <mu-icon left color="white" value="library_music" :size="isMobile ? 32 : 48"></mu-icon>
         <h1 class="ellipsis" @click="$emit('openHouse')">{{ title }}</h1>
-        <mu-icon left color="white" value="info_outline" :size="isMobile ? 32 : 48"></mu-icon>
+        <div class="right">
+            <mu-button fab :small="isMobile" color="primary" class="button-wrapper" @click="$emit('showHelp')">
+                <mu-icon value="help_outline" color="white" :size="isMobile ? 32 : 48"></mu-icon>
+            </mu-button>
+            <mu-button fab :small="isMobile" color="primary" class="button-wrapper" @click="$emit('showAbout')">
+                <mu-icon value="info_outline" color="white" :size="isMobile ? 32 : 48"></mu-icon>
+            </mu-button>
+        </div>
     </header>
 </template>
 
@@ -60,10 +67,21 @@ h1 {
         line-height: 40px;
     }
 
-    header{
+    header {
         margin: 0;
         padding: 16px 32px;
         box-shadow: 0 0 8px #00000080;
     }
+    
+    .mu-fab-button.mu-button-small {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 </style>
