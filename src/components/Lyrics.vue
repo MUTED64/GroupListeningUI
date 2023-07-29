@@ -97,9 +97,18 @@ export default {
 .lyrics-container {
   height: 100%;
   width: 100%;
-  overflow-y: hidden;
+  overflow-y: auto;
   scrollbar-width: none;
-  padding: 110px 24px;
+  padding: 0 24px;
+  scroll-behavior: smooth;
+}
+
+.lyrics-container > *:first-child {
+  margin-top: 110px;
+}
+
+.lyrics-container > *:last-child {
+  margin-bottom: 110px;
 }
 
 .lyrics-container::-webkit-scrollbar {
@@ -124,9 +133,9 @@ export default {
   width: 100%;
   display: flex;
   border-radius: 8px;
-  overflow: hidden;
   margin: 0 0 16px;
   background: #80808040;
+  position: relative;
   backdrop-filter: blur(60px);
 }
 </style>
