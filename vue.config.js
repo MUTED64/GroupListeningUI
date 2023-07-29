@@ -1,5 +1,7 @@
 module.exports = {
-    publicPath: './',
+    publicPath: process.env.NODE_ENV === 'production'
+    ? '/NeoJusicRelease/'
+    : '/',
     lintOnSave: false,
     devServer: {
       //开发环境下设置为编译好以后直接打开浏览器浏览
