@@ -1475,6 +1475,16 @@ export default {
             }
             messageContent.data.images = imgList;
             this.$store.commit("pushChatData", messageContent.data);
+            this.$nextTick(() => {
+              const chats = document.querySelector("#chat-container");
+              if (document.hidden || !this.isInViewport(chats)) {
+                this.notify(`${messageContent.data.nickName.split("(")[0]
+                  ? messageContent.data.nickName.split("(")[0]
+                  : "匿名" + messageContent.data.nickName}`,
+                  { body: messageContent.data.content, silent: true, icon: require("../assets/images/default_album.png") }
+                );
+              }
+            });
             break;
           case messageUtils.messageType.GOODMODEL:
             var data = messageContent.data;
@@ -2252,10 +2262,36 @@ export default {
               },
             ]
           });
-        }, 2000);
-
-        console.log(this.music.pictureUrl);
+        }, 3000);
       }
+    },
+    requestNotificationPermisson() {
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          return;
+        }
+        else if (Notification.permission !== "denied") {
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+              return;
+            }
+          });
+        }
+      }
+    },
+    notify(title, options) {
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          new Notification(title, options);
+        }
+      }
+    },
+    isInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+      );
     },
   },
   watch: {
@@ -2438,6 +2474,8 @@ export default {
         });
       });
     }
+
+    this.requestNotificationPermisson();
   },
   created() {
     // let val = this.albumRotateSize;
