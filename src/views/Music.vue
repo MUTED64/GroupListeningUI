@@ -1515,7 +1515,7 @@ export default {
               messageContent.data.url += "?timestamp=" + Date.now();
             }
             this.$store.commit("setPlayerMusic", messageContent.data);
-            console.log(document.querySelector("#music"))
+
             this.$nextTick(() => {
               document.querySelector("#music").preload = "auto";
             })
@@ -2228,6 +2228,35 @@ export default {
         behavior: 'smooth'
       });
     },
+    updateMediaSession() {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: "加载歌曲信息中...",
+          artist: " ",
+          album: " ",
+          artwork: [
+            {
+              src: this.music.pictureUrl,
+            },
+          ]
+        });
+
+        setTimeout(() => {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: this.music.name,
+            artist: this.music.artist,
+            album: this.music.album.name,
+            artwork: [
+              {
+                src: this.music.pictureUrl,
+              },
+            ]
+          });
+        }, 2000);
+
+        console.log(this.music.pictureUrl);
+      }
+    },
   },
   watch: {
     sourceGd: function (newValue, oldValue) {
@@ -2259,8 +2288,7 @@ export default {
           _this.albumRotate = true;
           let pushTime = _this.$store.getters.getPlayerMusic.pushTime;
           if (pushTime) {
-            // console.log("currenttime:",document.querySelector("#music").currentTime);
-            if ((Date.now() - pushTime) / 1000 - document.querySelector("#music").currentTime > 1) {
+            if ((Date.now() - pushTime) / 1000 - document.querySelector("#music").currentTime > 5) {
               document.querySelector("#music").currentTime =
                 (Date.now() - pushTime) / 1000;
             }
@@ -2302,54 +2330,7 @@ export default {
         }, false);
       }
 
-      // wx.ready(function() {
-      //     _this.$toast.message("调用weixin");
-      //     document.querySelector("#music").play();
-      // });
-      // this.createTouchstartEventAndDispatch(document);
-      // wx.config({
-      //           debug:false,
-      //           appId:"",
-      //           timestamp:1,
-      //           nonceStr:"",
-      //           signature:"",
-      //           jsApiList:[]
-      //       });
-      //       wx.ready(function(){
-      //           var autoplayVideo=document.getElementById("music");
-      //           autoplayVideo.play()
-      //       })
-      // this.albumRotate = false;
-      // 解决部分移动端不能自动播放
-      // document.addEventListener("touchstart", function() {
-      //   document.querySelector("#music").play();
-      // });
-      // document.addEventListener("touchend", function() {
-      //   let audio =  document.querySelector("#music");
-      //   if(audio.paused){
-      //     audio.play();
-      //   }
-      // });
-      //  document.addEventListener("touchcancel", function() {
-      //   let audio =  document.querySelector("#music");
-      //   if(audio.paused){
-      //     audio.play();
-      //   }
-      // });
-      //  document.addEventListener("click", function() {
-      //   let audio =  document.querySelector("#music");
-      //   if(audio.paused){
-      //     audio.play();
-      //   }
-      // });
-      // setTimeout(function() {
-      //   _this.albumRotate = true;
-      //   let pushTime = _this.$store.getters.getPlayerMusic.pushTime;
-      //   if (pushTime) {
-      //     document.querySelector("#music").currentTime =
-      //       (Date.now() - pushTime) / 1000;
-      //   }
-      // }, 1000);
+      this.updateMediaSession();
     },
     "$store.state.chat.data": function (newValue, oldValue) {
       setTimeout(function () {
@@ -2434,6 +2415,29 @@ export default {
       console.log("收", this.favoriteMap);
     }
     // localStorage.removeItem("collectMusic");
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.setActionHandler("play", () => {
+        document.querySelector("#music").play();
+      });
+      navigator.mediaSession.setActionHandler("pause", () => {
+        document.querySelector("#music").pause();
+      });
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
+        document.querySelector("#music").pause();
+        document.querySelector("#music").currentTime = 0;
+        document.querySelector("#music").play();
+      });
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        this.musicSkipVote();
+      });
+      navigator.mediaSession.setActionHandler("seekto", () => {
+        navigator.mediaSession.setPositionState({
+          duration: document.querySelector("#music").duration,
+          position: document.querySelector("#music").currentTime,
+        });
+      });
+    }
   },
   created() {
     // let val = this.albumRotateSize;
