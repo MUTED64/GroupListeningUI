@@ -13,8 +13,6 @@
             "type": "image/png"
         }
     ],
-    "start_url": "/NeoJusicRelease/",
-    "scope": "/NeoJusicRelease/",
     "display": "standalone",
     "background_color": "#263238",
     "theme_color": "#000000"

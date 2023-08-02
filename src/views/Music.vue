@@ -1,5 +1,16 @@
 <template>
   <div>
+    <!-- <div class="ask-for-notification-permission">
+      <div>开启通知以获得聊天提醒</div>
+      <mu-button small color="primary" class="button-wrapper" @click="askForNotificationPermission">
+        <mu-icon left value="notifications" color="white"></mu-icon>
+        开启
+      </mu-button>
+      <mu-button small color="primary" class="button-wrapper" @click="askForNotificationPermission">
+        <mu-icon left value="notifications_off" color="white"></mu-icon>
+        拒绝
+      </mu-button>
+    </div> -->
     <div class="music-player-page" v-if="isPlay">
       <PageHeader :title="musichouse" @openHouse="openHouse = !openHouse" @showHelp="openManual = !openManual"
         @showAbout="openAbout = !openAbout"></PageHeader>
@@ -2413,7 +2424,6 @@ export default {
     }
   },
   mounted() {
-
     this.getScreenWidth();
     this.$nextTick(function () {
       this.$http.defaults.baseURL = baseUrl;
@@ -2474,8 +2484,6 @@ export default {
         });
       });
     }
-
-    this.requestNotificationPermisson();
   },
   created() {
     // let val = this.albumRotateSize;
