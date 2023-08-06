@@ -1,16 +1,16 @@
 <template>
   <div>
-    <!-- <div class="ask-for-notification-permission">
+    <div class="ask-for-notification-permission" v-if="showPermissionRequest">
       <div>开启通知以获得聊天提醒</div>
-      <mu-button small color="primary" class="button-wrapper" @click="askForNotificationPermission">
+      <mu-button small color="primary" class="button-wrapper" @click="() => requestNotificationPermisson(true)">
         <mu-icon left value="notifications" color="white"></mu-icon>
         开启
       </mu-button>
-      <mu-button small color="primary" class="button-wrapper" @click="askForNotificationPermission">
+      <mu-button small color="primary" class="button-wrapper" @click="() => requestNotificationPermisson(false)">
         <mu-icon left value="notifications_off" color="white"></mu-icon>
         拒绝
       </mu-button>
-    </div> -->
+    </div>
     <div class="music-player-page" v-if="isPlay">
       <PageHeader :title="musichouse" @openHouse="openHouse = !openHouse" @showHelp="openManual = !openManual"
         @showAbout="openAbout = !openAbout"></PageHeader>
@@ -33,20 +33,20 @@
                   <small id="musicEndTime">{{ playerTime }}</small>
                   <mu-linear-progress mode="determinate" :value="progress" color="white" size="8"
                     style="border-radius: 4px; margin-bottom: 16px;"></mu-linear-progress>
-
-                  <!-- <mu-flex justify-content="start" style="width: 100%; gap: 8px;">
+                </div>
+                <mu-button fab small color="primary" class="button-wrapper" @click="musicSkipVote">
+                  <mu-icon value="skip_next" color="white" size="40"></mu-icon>
+                </mu-button>
+              </div>
+              <mu-flex justify-content="start" style="width: 100%; gap: 8px;">
                   <mu-flex class="flex-demo">
                     <mu-icon value="volume_up"></mu-icon>
                   </mu-flex>
                   <mu-flex class="flex-demo" fill>
                     <mu-slider class="demo-slider" v-model="volume" color="white"></mu-slider>
                   </mu-flex>
-                </mu-flex> -->
-                </div>
-                <mu-button fab small color="primary" class="button-wrapper" @click="musicSkipVote">
-                  <mu-icon value="skip_next" color="white" size="40"></mu-icon>
-                </mu-button>
-              </div>
+                  <mu-flex class="flex-demo" style="width:1px;height:1px;"></mu-flex>
+                </mu-flex>
               <Lyrics :lyrics="lyrics" :currentTime="currentTime" />
             </mu-row>
           </mu-col>
@@ -145,7 +145,7 @@
         </mu-row>
       </mu-container>
       <div class="mobile-bottom-jump">
-        <mu-ripple @click="scrollToHash('nowplaying',)" class="mu-ripple" color="white" :opacity="0.3">
+        <mu-ripple @click="scrollToHash('nowplaying')" class="mu-ripple" color="white" :opacity="0.3">
           <mu-icon left color="white" value="music_note" size="28"></mu-icon>
         </mu-ripple>
         <mu-ripple @click="scrollToHash('playlist')" class="mu-ripple" color="white" :opacity="0.3">
@@ -153,6 +153,12 @@
         </mu-ripple>
         <mu-ripple @click="scrollToHash('chat')" class="mu-ripple" color="white" :opacity="0.3">
           <mu-icon left color="white" value="chat" size="28"></mu-icon>
+        </mu-ripple>
+        <mu-ripple @click="openSearch = !openSearch" class="mu-ripple" color="white" :opacity="0.3">
+          <mu-icon left color="white" value="playlist_add" size="30"></mu-icon>
+        </mu-ripple>
+        <mu-ripple @click="musicSkipVote" class="mu-ripple" color="white" :opacity="0.3">
+          <mu-icon left color="white" value="skip_next" size="28"></mu-icon>
         </mu-ripple>
       </div>
       <div id="blur" :style="{ background: 'url(' + music.pictureUrl + ') no-repeat center/cover' }">
@@ -836,7 +842,7 @@ export default {
     },
     isMobile() {
       return this.screenWidth < 766 & this.screenWidth > 0;
-    }
+    },
   },
   data: () => ({
     isPlay: false,
@@ -952,7 +958,8 @@ export default {
     currentTime: 0,
     lyrics: {},
     openLyrics: false,
-    houseSearch: ''
+    houseSearch: '',
+    showPermissionRequest: Notification.permission === "default" && localStorage.getItem("permissionRequest") !== "denied",
   }),
   methods: {
     play: function () {
@@ -2276,19 +2283,18 @@ export default {
         }, 3000);
       }
     },
-    requestNotificationPermisson() {
-      if ("Notification" in window) {
-        if (Notification.permission === "granted") {
-          return;
-        }
-        else if (Notification.permission !== "denied") {
-          Notification.requestPermission().then((permission) => {
-            if (permission === "granted") {
-              return;
-            }
-          });
-        }
+    requestNotificationPermisson(grant) {
+      if (grant) {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            return;
+          }
+        });
+      } else {
+        localStorage.setItem("permissionRequest", "denied");
       }
+      this.showPermissionRequest = false;
+      return;
     },
     notify(title, options) {
       if ("Notification" in window) {

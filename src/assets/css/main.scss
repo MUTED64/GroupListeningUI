@@ -18,7 +18,17 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  background: black;
+  height: 72px;
+  background: #00000080;
+  backdrop-filter: blur(10px);
+  gap: 16px;
+  z-index: 6;
+
+  button{
+    border-radius: 4px;
+    background: #80808080;
+    min-width: 0;
+  }
 }
 
 #playlist {
@@ -408,7 +418,6 @@ th {
 
 .playing-status {
   flex: 1;
-  margin-bottom: 8px;
 }
 
 body .button-wrapper {
