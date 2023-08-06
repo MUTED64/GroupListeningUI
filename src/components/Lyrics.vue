@@ -136,6 +136,5 @@ export default {
   margin: 0 0 16px;
   background: #80808040;
   position: relative;
-  backdrop-filter: blur(60px);
 }
 </style>
