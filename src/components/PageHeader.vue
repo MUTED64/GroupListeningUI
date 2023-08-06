@@ -69,7 +69,7 @@ h1 {
 
     header {
         margin: 0;
-        padding: 16px 32px;
+        padding: 16px 16px 16px 32px;
         box-shadow: 0 0 8px #00000080;
     }
     
