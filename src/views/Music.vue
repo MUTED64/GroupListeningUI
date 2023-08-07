@@ -39,14 +39,14 @@
                 </mu-button>
               </div>
               <mu-flex justify-content="start" style="width: 100%; gap: 8px;">
-                  <mu-flex class="flex-demo">
-                    <mu-icon value="volume_up"></mu-icon>
-                  </mu-flex>
-                  <mu-flex class="flex-demo" fill>
-                    <mu-slider class="demo-slider" v-model="volume" color="white"></mu-slider>
-                  </mu-flex>
-                  <mu-flex class="flex-demo" style="width:1px;height:1px;"></mu-flex>
+                <mu-flex class="flex-demo">
+                  <mu-icon value="volume_up"></mu-icon>
                 </mu-flex>
+                <mu-flex class="flex-demo" fill>
+                  <mu-slider class="demo-slider" v-model="volume" color="white"></mu-slider>
+                </mu-flex>
+                <mu-flex class="flex-demo" style="width:1px;height:1px;"></mu-flex>
+              </mu-flex>
               <Lyrics :lyrics="lyrics" :currentTime="currentTime" />
             </mu-row>
           </mu-col>
@@ -959,7 +959,7 @@ export default {
     lyrics: {},
     openLyrics: false,
     houseSearch: '',
-    showPermissionRequest: Notification.permission === "default" && localStorage.getItem("permissionRequest") !== "denied",
+    showPermissionRequest: navigator.userAgent.indexOf('Safari') === -1 && Notification.permission === "default" && localStorage.getItem("permissionRequest") !== "denied",
   }),
   methods: {
     play: function () {
