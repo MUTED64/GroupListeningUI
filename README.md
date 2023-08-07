@@ -1,6 +1,6 @@
-# NeoJusic
+# NeoJusicUI
 
-[一起听歌吧](https://github.com/JumpAlang/Jusic-Serve-Houses)的前端
+[一起听歌吧（Jusic）](https://github.com/JumpAlang/Jusic-Serve-Houses)的前端，翻新了播放页面的UI
 
 ## Project setup
 
@@ -30,6 +30,8 @@ npm run test
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-## 参考项目
+## References
 
-Jusic-ui:[Jusic-ui](https://github.com/hanhuoer/Jusic-ui/)
+[hanhuoer/Jusic-ui](https://github.com/hanhuoer/Jusic-ui/)
+
+[JumpAlang/Jusic-ui](https://github.com/JumpAlang/Jusic-ui)
